@@ -27,7 +27,16 @@
         List<SearchStringModel> searchQuery = args.SearchQuery;
         if ((searchQuery != null) && (Context.ContentDatabase != null))
         {
-          Language lang = LanguageManager.GetLanguage(args.CustomData["lang"].ToString()) ?? Context.Language;
+          Language lang;
+          if (args.CustomData["lang"] != null)
+          {
+            lang = LanguageManager.GetLanguage(args.CustomData["lang"].ToString());
+          }
+          else
+          {
+            lang = Context.Language;
+          }
+          
           SitecoreIndexableItem indexable = Context.ContentDatabase.GetItem(args.LocationFilter, lang);
           string contextIndexName = ContentSearchManager.GetContextIndexName(indexable);
           using (IProviderSearchContext context = ContentSearchManager.GetIndex(contextIndexName).CreateSearchContext(SearchSecurityOptions.Default))
